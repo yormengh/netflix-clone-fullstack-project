@@ -25,9 +25,9 @@ RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 5173
 
-ENV PORT=3000
+ENV PORT=5173
 ENV HOSTNAME=0.0.0.0
 
 CMD ["npm", "run", "dev"] 
