@@ -1,0 +1,23 @@
+# Development Dockerfile for Netflix Clone
+# - Builds dependencies at image build time for faster container start
+# - Designed to be used with a source mount for hot-reload development
+
+FROM node:18-alpine
+WORKDIR /app
+
+ENV NODE_ENV=development
+ENV PORT=5173
+ENV HOST=0.0.0.0
+
+# Install deps
+COPY package*.json ./
+RUN npm ci --silent
+
+# Copy the source (can be overridden by a bind mount at runtime)
+COPY . .
+
+# Expose the development port (Vite default)
+EXPOSE 5173
+
+# Start the dev server
+CMD ["npm", "run", "dev"]

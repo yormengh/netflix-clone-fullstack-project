@@ -1,0 +1,17 @@
+# Node modules and build outputs
+node_modules
+dist
+
+# Environment files
+.env
+
+# Git
+.git
+
+# macOS and editor artifacts
+.DS_Store
+.vscode
+
+# Logs
+npm-debug.log
+yarn-error.log
