@@ -39,3 +39,4 @@ jobs:
       run: |
         docker build -t ghcr.io/yormengh/netflix-clone:latest .
         docker push ghcr.io/yormengh/netflix-clone:latest
+        
