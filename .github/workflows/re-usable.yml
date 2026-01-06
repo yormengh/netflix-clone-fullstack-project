@@ -1,21 +1,21 @@
-name: Docker Workflow
+name: Deploy Workflow
 
 on:
-  - push
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        default: 'production'
 
 env:
     CONTAINER_REGISTRY: docker.io
     IMAGE_NAME: netflix-clone
 
-permissions:
-    id-token: write
-    contents: write
-    packages: write
-
 jobs: 
   docker_build: 
     runs-on: ubuntu-latest
-    steps:
+    steps: 
     - name: Checkout Code
       uses: actions/checkout@v4
 
@@ -25,18 +25,18 @@ jobs:
     - name: Docker Login
       run: docker login --username=${{ vars.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Publish code to DockerHub
+    - name: Docker Publish 
       run: docker push ${{ env.CONTAINER_REGISTRY }}/${{ vars.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
-    - name: GHCR Login
-      uses: docker/login-action@v2.2.0
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}  
-        password: ${{ secrets.GITHUB_TOKEN }}  
-
-    - name: Publish code to GHCR
-      run: |
-        docker build -t ghcr.io/yormengh/netflix-clone:latest .
-        docker push ghcr.io/yormengh/netflix-clone:latest
+  docker_deploy:
+    needs: docker_build
+    runs-on: ubuntu-latest
+    
+    steps:
+     - name: Docker Login
+       run: docker login --username=${{ vars.DOCKER_USERNAME }} --password=${{ secrets.DOCKER_PASSWORD }}
+    
+     - name: Docker Run
+       run: |
+        docker run -d -p 8080:80 ${{ env.CONTAINER_REGISTRY }}/${{ vars.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest 
         
