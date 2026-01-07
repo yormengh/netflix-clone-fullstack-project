@@ -7,6 +7,9 @@ on:
         required: true
         type: string
         default: 'production'
+    secrets:
+      DOCKER_PASSWORD:
+        required: true
 
 env:
     CONTAINER_REGISTRY: docker.io
@@ -15,6 +18,7 @@ env:
 jobs: 
   docker_build: 
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps: 
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -34,6 +38,7 @@ jobs:
   docker_deploy:
     needs: docker_build
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     
     steps:
      - name: Log in to Docker Hub
@@ -46,5 +51,5 @@ jobs:
        run: |
         docker run -d -p 5173:5173 ${{ env.CONTAINER_REGISTRY }}/${{ vars.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
 
-        
+
         
