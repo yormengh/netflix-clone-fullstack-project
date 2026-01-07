@@ -10,15 +10,18 @@ jobs:
     uses: ./.github/workflows/re-usable.yml
     with:
       environment: dev
+    secrets: inherit  # This passes all secrets automatically
 
   deploy_staging:
     needs: deploy_dev
     uses: ./.github/workflows/re-usable.yml
     with:
       environment: staging
+    secrets: inherit
 
   deploy_prod:
     needs: deploy_staging
     uses: ./.github/workflows/re-usable.yml
     with:
       environment: production
+    secrets: inherit
