@@ -19,11 +19,14 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
     - name: Docker Build
       run: docker build -t ${{ env.CONTAINER_REGISTRY }}/${{ vars.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest .
-
-    - name: Docker Login
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ vars.DOCKER_USERNAME }} --password-stdin
 
     - name: Docker Publish 
       run: docker push ${{ env.CONTAINER_REGISTRY }}/${{ vars.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest
@@ -33,8 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-     - name: Docker Login
-       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login --username ${{ vars.DOCKER_USERNAME }} --password-stdin
+     - name: Log in to Docker Hub
+       uses: docker/login-action@v3
+       with:
+         username: ${{ vars.DOCKER_USERNAME }}
+         password: ${{ secrets.DOCKER_PASSWORD }}
     
      - name: Docker Run
        run: |
